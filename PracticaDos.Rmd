@@ -1,0 +1,51 @@
+---
+title: "PrácticaDos"
+author: "Nahun Antonio Martínez Olmos"
+date: "2023-08-09"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Creación de la función
+
+
+```{r}
+
+
+estatura_cm <- c(170.0, 183.5, 142.6, 189.2, 144.1, 161.0, 190.0, 184.5, 179.93,
+                 187.42, 178.34, 158.34, 170.0, 173.4, 176.0, 183.4, 177.83)
+
+Medidas <- function(variable,nombre)
+{
+  if (length(variable)>1) {
+    
+    print(paste('La media de la variable',nombre,'es',round(mean(variable),4)))
+    
+    if (length(variable)>2) {
+     
+      v<-fivenum(variable)
+      print(paste('El máximo y el mínimo de la variable',nombre,'son',v[1],'y',
+                  v[5],'respectivamente.'))
+      print(paste('El primer cuartil, la mediana y el segundo cuartil de la variable',
+                  nombre,'son',v[2],',',v[3],'y',v[4],'respectivamente.'))
+      print(paste('La cuasivarianza de la variable',nombre,'es',
+                  round(var(variable),4)))
+      print(paste('La cuasidesviación típica de la variable',nombre,'es',
+                  round(sd(variable),4)))
+  
+    } else {
+      print('La variable',nombre,'solo contiene dos mediciones, por lo que no tiene sentido o no se podría calcular las demas medidas de centralización o de dispersión.')
+    }
+  } else {
+    print('la variable solo tiene una medición, lo que significa que no tiene sentido calcularle ninguna medida.')
+  }
+}
+
+Medidas(estatura_cm,'estatura')
+```
+
+
+

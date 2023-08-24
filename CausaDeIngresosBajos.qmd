@@ -1,0 +1,98 @@
+---
+title: "Causas de ingresos bajos"
+subtitle: "Nahun Antonio Martínez Olmos (MO19005)"
+format: pdf
+editor: visual
+---
+# Análisis de ingresos bajos en el restaurante
+
+Lo primero que realizaremos es cargar los paquetes necesarios que vamos a utilizar (readxl y ggplotq) para nuestro análisis, importar la base de datos que contiene los registros del restaurante, ver el número de registros y de variables que contiene la base de datos y por ultimo veremos cuales son las 12 variables que contiene la base de datos.
+
+```{r}
+library(readxl)
+library(ggplot2)
+
+datos <- read_excel('Restaurante, Power BI, Datos.xlsx')
+
+dim(datos)
+colnames(datos)
+#View(datos)
+
+```
+Como podemos observar en la salida anterior, la base de datos contiene 12 variables y 30132 registros de las variables número de orden, fecha, hora de cobro, mesa, empleado que atendió al cliente, tipo de orden, producto, categoria del producto, precio, costo, propina y tipo de cliente, saber las variables que contiene la base de datos nos ayudará mucho en nuestro análisis para investigar las causas que pueden tener peso con respecto a los pocos ingresos en el restaurante.
+
+A continuación se eliminarán los registros que contengan valores nulos, si es que hubiesen.
+
+```{r}
+datos <- na.omit(datos)
+dim(datos)
+```
+Como podemos observar, se ha eliminado solamente un registro, el cual no afectará a nuestro análisis, debido a que son muchos los registros con los que se cuenta.
+
+A continuación se mostrará de manera gráfica como se distribuyen los costos en el restaurante.
+
+```{r}
+nbreaks <- pretty(range(datos$Costo), n = nclass.Sturges(datos$Costo),
+                  min.n = 1)
+
+ggplot(data = datos, aes(x = Costo)) +
+       geom_histogram(aes(y = ..density..), breaks = nbreaks,
+                      color = "gray", fill = "white") +
+       geom_density(fill = "black", alpha = 0.2) +
+   labs(title = 'Costos del Restaurante',
+       y= 'Frecuencia relativa',
+       x= 'Cantidad en dolares')
+```
+Como podemos observar en el gráfico anterior, son pocas las ventas de precios altos comparados con los precios bajos y decreces muy rapidamente las ventas de productos con precios bajos hasta los precios mas altos que ofrece el restaurante. 
+
+A continuación, se analizarán los precios de los productos que ofrece el restaurante con respecto a las ventas que ha realizado cada una de los empleados del restaurante, esto con el fín de verificar si algun empleado no genera muchos ingresos. 
+
+```{r}
+library(ggthemes)
+
+ggplot(data=datos, mapping = aes(x=Precio, color=datos$Atendió))+
+  geom_boxplot()+
+ labs(title = 'Precios',
+       subtitle = 'Restaurante',
+       x= 'Cantidad en dolares',
+       y= ' ',
+       color='Meseros')+
+   theme_gdocs()
+```
+Como podemos observar, en la figura anterior, cada una uno de los meseros del restaurante ha bendido en promedio practicamente lo mismo, es decir, no hay una diferencia significativa en los promedios de vente entre los empleados, y se observan datos atípicos debido a que son pocos los productos que se venden de precios altos.
+
+Ahora se realizará el mismo análisis anterior, solo que en esta ocasión será con respecto a los costos de los productos del restaurante.
+
+```{r}
+ggplot(data=datos, mapping = aes(x=Costo, color=datos$Atendió))+
+  geom_boxplot()+
+ labs(title = 'Costos',
+       subtitle = 'Restaurante',
+       x= 'Cantidad en dolares',
+       y= ' ',
+       color='Meseros')+
+   theme_gdocs() +
+  theme(legend.title = element_text(color='black', size = 12, face = 'bold'),
+        plot.subtitle = element_text(color = 'grey', size = 14, face='bold.italic'),
+        axis.title.x = element_text(color='black', size = 12, face = 'bold'),
+        axis.title.y = element_text(color='black', size = 12, face = 'bold'),
+        plot.title = element_text(color='black', size = 18, face = 'bold')) +
+  scale_color_brewer(palette = 'Dark2')
+```
+
+Nuevamente, al igual que en los precios, no se observa diferencia significativa en los precios, con respecto al total de ventas que ha realizado cada empleado, esto puede deberse a que en su mayoria, las ventas que se han realizado son la de los productos mas baratos.
+
+Ahora se realizará un gráfico para analizar las propinas con respecto al tipo de producto y al tipo de cliente.
+
+```{r}
+ggplot(data=datos)+
+  geom_point(mapping = aes(x=Costo,y=Propina,color=`Tipo de Cliente`))+
+  facet_wrap(~Tipo,nrow=1,ncol=2)
+```
+como podemos observar, las propinas para bebidas estan mas dispersas que las propinas para comidas, sin embargo, los clientes tienden a dar una mejor propina cuando consumen comida que cuando ordenan bebidas, y en ambos casos las propinas son mayores cuando ordenan tanto bebidas como comidas de precios mas pequeños, y son los clientes nuevos los que tienden a dar propinas mas altas en este restaurante, esto nos lleva a continuación, a observar de forma grafica la frecuencia de los consumos de los productos que ofrece el restaurante, con respecto a los clientes. 
+
+```{r}
+ggplot(data=datos)+
+  geom_bar(mapping = aes(x=Categoria,fill=`Tipo de Cliente`))
+```
+Como podemos observar en el gráfico anterior, son los clientes nuevos los que generan mas ingresos para el restaurante, esto quiere decir que cada cliente nuevo, posiblemente opta por no regresar al restaurante, eso nos lleva a sugerir que productos poco consumidos como vinos, tacos, postres o pastas se mejoren en calidad y algunos tambien en variedad, y si los precios son demasiado elevados se vendan en precio mas comodo los productos menos consumidos para que de esta manera los clientes opten por volver a visitar el restaurante y de esa manera crece el número de clientes del restaurante y así los ingresos ya no bajen y el dueño del restaurante pueda estar satisfecho con su negocio. 
