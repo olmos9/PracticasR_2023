@@ -1,0 +1,83 @@
+---
+title: "Importar y exportar datos en R"
+author: "Nahun Antonio Martínez Olmos"
+date: "2023-09-02"
+output: pdf_document
+---
+
+# Importar y exportar datos en diferentes formatos en R
+
+```{r}
+library(readxl)
+lungcapdata <- read_excel('LungCapData (1).xlsx')
+head(lungcapdata, 8)
+```
+```{r}
+library('xlsx')
+i2 <- read.xlsx('LungCapData (1).xlsX', 1, header = TRUE)
+
+head(i2,8)
+```
+```{r}
+dim(lungcapdata)
+length(lungcapdata)
+tail(lungcapdata)
+```
+
+```{r}
+library(psych)
+str(lungcapdata)
+```
+### Datos en formate txt 
+
+```{r}
+datos1 <- read.table('lungCapData3.txt', header = TRUE)
+head(datos1, 6)
+```
+
+# Expartando bases de datos desde R
+
+```{r}
+write.table(lungcapdata, file = 'lungcapdata.csv')
+write.table(lungcapdata, file = 'lungcapdata.txt')
+write.table(lungcapdata, file = 'lungcapdata.xlsx')
+```
+
+
+# Importando datos desde spss
+
+```{r}
+library(haven)
+demografia <- read_sav('LungCapData1.sav')
+demografia <- as.data.frame(demografia)
+head(demografia,6)
+```
+
+```{r}
+attach(demografia)
+#library(modes) esta libreria me da error
+mean(demografia$Age)
+median(demografia$Age)
+```
+# Importando base de datos desde sas
+```{r}
+ArchivoSAS <- read_sas('LungCapData5.sas7bdat',NULL)
+head(ArchivoSAS)
+```
+
+# Importando archivo dta
+
+```{r}
+library(haven)
+mdata <- read_dta('LungCapData6.dta')
+mdata <- as.data.frame(mydata)
+head(mdata)
+```
+
+
+
+
+
+
+
+
