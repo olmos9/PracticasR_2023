@@ -1,0 +1,150 @@
+---
+title: "Intervalos"
+author: "Nahun Antonio Martínez Olmos"
+date: "2023-09-25"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+Ejemplo, calcular intervalo de confianza:
+
+```{r}
+n <- 50
+media <- 32
+desv <- 6
+nc <- 0.9
+error.est <- desv/sqrt(n)
+
+margen.error <- 1.644854*error.est
+
+LI <- media - margen.error; LS <- media + margen.error
+cat('[',LI,',',LS,']')
+```
+
+$Z_{\frac{\alpha}{2}}$
+
+## Función para intervalos de confianza
+
+```{r}
+library(BSDA)
+#library(lattice)
+zsum.test(mean.x = 32, sigma.x = 6, n.x = 50, conf.level = 0.9)
+```
+
+Intervalos para diferencia de medias.
+
+```{r}
+zsum.test(mean.x = 81, sigma.x = 5.2, n.x = 25, mean.y = 76, sigma.y = 3.4,
+          n.y = 36, conf.level = 0.99)
+```
+
+# ejercicico
+
+hay 35 estudiantes y quienren estimar la media de las notasm con base al historico se sabe que la std es de 2.01, la media de los 35 estudiantes es de 4.9.
+
+Construya 3 intervalos de confianza, uno de 90%, 95% y 99%.
+
+```{r}
+zsum.test(mean.x = 35, sigma.x = 2.01, n.x = 35, conf.level = 0.9)
+zsum.test(mean.x = 35, sigma.x = 2.01, n.x = 35, conf.level = 0.95)
+zsum.test(mean.x = 35, sigma.x = 2.01, n.x = 35, conf.level = 0.99)
+```
+
+## Muestras pequeñas
+
+```{r}
+qt(0.05,9)
+```
+
+Prueba de Fisher.
+
+t.test se usa para prueba e hipotesis y construye un intervalo de confianza.
+
+```{r}
+url<- 'https://raw.githubusercontent.com/fhernanb/datos/master/medidas_cuerpo'
+datos <- read.table(file=url, header = TRUE)
+head(datos)
+dim(datos)
+```
+
+```{r}
+hombres <- datos[datos$sexo=="Hombre",]
+```
+
+grafico
+
+```{r}
+library(car)
+par(mfrow=c(1,2))
+
+qqPlot(hombres$altura, pch=19, main='qqplot para Altura',
+       xlab = 'Cuantiles teoricos', ylab = 'Cuantiles muestrales')
+hist(hombres$altura,freq = F,main = 'Histograma para la altura')
+points(density(hombres$altura),type = "l",lwd=4)
+```
+
+Intervalo de confianza.
+
+```{r}
+shapiro.test(hombres$altura)
+
+res <- t.test(x=hombres$altura, conf.level=0.90)
+res$conf.int
+```
+
+```{r}
+mujeres <- datos[datos$sexo=="Mujer", ]
+shapiro.test(mujeres$altura)
+```
+
+```{r}
+par(mfrow=c(2,2))
+require(car)  # Debe instalar antes el paquete car
+qqPlot(hombres$altura, pch=19, las=1, main='QQplot altura hombres',
+       xlab='Cuantiles teóricos', ylab='Cuantiles muestrales')
+
+hist(hombres$altura, las=1, xlab='Altura', ylab='Frecuencia',
+     main='Histograma altura hombres')
+
+qqPlot(mujeres$altura, pch=19, las=1, main='QQplot altura mujeres',
+       xlab='Cuantiles teóricos', ylab='Cuantiles muestrales')
+
+
+hist(mujeres$altura, las=1, xlab='Altura', ylab='Frecuencia',
+     main='Histograma altura mujeres')
+
+res <- t.test(x=hombres$altura, y=mujeres$altura,
+              paired=FALSE, var.equal=TRUE, conf.level = 0.95)
+res$conf.int
+
+```
+
+Analisis con las diferencias de medias
+
+```{r}
+library(stats)
+diferencias<-abs(hombres$altura-mujeres$altura)
+
+qqPlot(diferencias, pch=19, main='qqplot para alturas',
+       xlab = 'Cuantiles teoricos', ylab = 'Cuantiles muestrales')
+
+shapiro.test(diferencias)
+```
+
+## Intervalo de confianza para la diferencia de proporciones
+
+```{r}
+#Intervalo de confianza bilateral para la varianza
+require(stests)  # Para cargar el paquete
+res <- stests::var.test(x=ingresoh, conf.level=0.95)
+res$conf.int
+
+#Intervalo de confianza bilateral para la razón de varianzas (prueba F)
+res1 <- stests::var.test(x=ingresoh, y=ingresom, conf.level=0.95)
+res1$conf.int
+```

@@ -1,0 +1,81 @@
+---
+title: "Espacios muestrales (práctica 9)"
+author: "Nahun Antonio Martínez Olmos"
+format: pdf
+editor: visual
+---
+
+# Espacios muestrales y muestras aleatorias 
+
+sintaxis: sample(x, size, replace=FALSE, prob=NULL)
+
+```{r}
+moneda <- c("cara", "corona") #vector del que se tomara la muestra
+n<-10
+
+lanzamiento <- sample(moneda, n, replace = TRUE); lanzamiento
+```
+se generará un espacio
+
+```{r}
+espacio <- 1:54
+
+n<-6
+
+muestra1 <- sample(espacio, n, replace = TRUE); muestra1
+
+muestra2 <- sample(espacio, n, replace = FALSE); muestra2
+```
+
+Simular 4 lanzamientos de dos dados 
+
+```{r}
+espacio <- as.vector(outer(1:6,1:6,paste))
+espacio
+
+muestrad <- sample(espacio,4,replace=TRUE); muestrad
+```
+Espacio muestral para naipes 
+
+```{r}
+naipes <- paste(rep(c("A",2:10,"J","Q","K"),4),
+                c("OROS","COPAS","DIAMANTES","BASTOS"))
+naipes
+```
+generar una muestra aleatoria de 120 elementos con los numeross del 1 al 6.
+
+```{r}
+v<-1:6;n<-120
+
+probabilidades <- c(0.5, 0.25, 0.15, 0.04, 0.03, 0.003)
+sum(probabilidades)
+
+muestra<-sample(v,n,replace=TRUE,probabilidades); muestra
+
+
+```
+Cree una función que reciba los números de 1 a 500, inclusibe, la funcion retornará el espacio formado por los numeros dibisible entre 7, luego debera extraer una muestra aleatoria de estos numeros con reemplazo,
+
+```{r}
+v=c()
+j=0
+for (i in 1:500) if (i%%7==0) {
+  v[j]=i
+  j=j+1
+}
+v
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
