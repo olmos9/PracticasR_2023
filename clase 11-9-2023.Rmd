@@ -1,0 +1,260 @@
+---
+title: "clase 11 de septiembre"
+author: "Nahun Antonio Martínez Olmos"
+date: "2023-09-11"
+output: pdf_document
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Distribución binomial
+
+dbinom(valor, size=n, prob=p) = 0.087
+
+```{r}
+dbinom(20,50,0.35)
+```
+
+rango = 0:n df \<- data.frame(x=rango, y=dbinom())
+
+```{r}
+
+library(ggplot2)
+df <- data.frame(x=0:50, y=dbinom(0:50,50,0.35))
+
+head(df)
+df
+valor<-df$y
+
+
+ggplot(data=df, aes(x=x,y=y, fill=factor(ifelse(x==valor,"valor","resto")))) +
+  geom_bar(stat = 'identity')
+
+```
+
+pbinom(valor, size=n, prob=p, lower.tail=FALSE)
+
+```{r}
+pbinom(14,50,0.35,lower.tail = FALSE);
+
+1- pbinom(14,50,0.35)
+```
+
+TAREA: Area entre valores
+
+p(12\<x\<20)
+
+```{r}
+p1<- pbinom(19,50,0.35)-pbinom(12,50,0.35); p1
+
+p2<- pbinom(15,50,0.35)-pbinom(9,50,0.35); p2
+
+```
+
+qbinom(a, size=n, prob=p) es una distribucion binomial a la inversa
+
+```{r}
+qbinom(0.3,50,0.66)
+```
+
+modelacion y sumulacion
+
+rbinom(10,size=9,p) me produce una muestra aleatoria de numeros con
+comportamiento binomial
+
+```{r}
+rbinom(10,50,0.35)
+```
+
+cada vez que se ejecuta el codigo se generan numeros aleatorios y R
+genera valores diferentes. Si usted quiere generar los mismos valores se
+puede fijar un semilla mediante la funcion set.seed() (opcional, si
+ponemos un numero dentro del parentesis y si le ponemos por ej 1 estará
+especifico para un conjunto de datos)
+
+```{r}
+set.seed(1)
+rbinom(10,50,0.35)
+```
+
+## Distribución de poisson
+
+dpois() ppois() qpois() rpois(): hacer simulación
+
+ejemplo:
+
+dpois(valor,lambda=lambda)
+
+```{r}
+dpois(4,0.9)
+
+rango=0:8
+df <- data.frame(rango, y=dpois(rango,lambda=0.9))
+df
+valor<-4
+
+
+ggplot(data=df, aes(x=rango,y=y, fill=factor(ifelse(rango>=valor,"valor","resto")))) +
+  dens(stat = 'identity')
+```
+
+```{r}
+dpois(0,0.9)+dpois(1,0.9)+dpois(2,0.9)
+
+ppois(2,0.9)
+
+valor<-2
+
+
+ggplot(data=df, aes(x=rango,y=y, fill=factor(ifelse(rango<=valor,"valor","resto")))) +
+  geom_bar(stat = 'identity')
+```
+
+#### Dustribución de poisson a la inversa
+
+```{r}
+qpois(0.4,0.9)
+```
+
+### Simulación de datos con comportamiento de poisson
+
+```{r}
+rpois(30,0.9)
+```
+
+## Distribución normal
+
+$X$ se distribuye con $\mu=3$ y $\sigma=0.3$, encontraremos la
+probabilidad de $x=3$ y $x=2.8$
+
+Sintaxis: pnorm(valor1, mean=$\mu$, sd= $\sigma$)
+
+```{r}
+pnorm(2.8, 3, 0.3)
+
+rango = c(3-3*0.3, 3+3*0.3)
+
+ggplot(data.frame(x=rango), aes(x=rango)) + 
+  stat_function(fun = dnorm, n=101, args = list(mean=3, sd=0.3)) +
+  geom_area(stat = 'function', fun =dnorm, args=list(mean=3, sd=0.3),
+            fill='red', xlim=c(3-3*0.3, 3+3*0.3), alpha=0.3)
+```
+
+## Distribución uniforme
+
+punif()
+
+Una persona espera aleatoriamente entre 0 y 90 minutos. Sí al dia
+siguiente espera menos de 15 minutos mantiene el trato, sí espera entre
+15 y 55 minutos no toma decisiones, mientra que si se tarda mas de 55
+minutos rompe el trato.
+
+a)  menor a 15 minutos
+
+```{r}
+x<-15
+punif(x, min=0, max=90, lower.tail = TRUE)
+```
+
+b)  entre 15 y 55 minutos
+
+```{r}
+punif(55, min=0, max=90, lower.tail = TRUE) - 
+  punif(15, min=0, max=90, lower.tail = TRUE)
+```
+
+c)  menor que 55 minutos
+
+```{r}
+1-punif(55, min=0, max=90, lower.tail = TRUE)
+```
+
+d)  aplace la decisión para la segunda cita si se tarda mas de 55
+    minutos.
+
+```{r}
+(1-punif(55, min=0, max=90, lower.tail = TRUE))^2
+```
+
+Una empresa busca personal, el perfil solicitado es que sean personas
+extrovertidas y creativas. Se han presentado 50 candidatos y el criterio
+establecido es que superen el percentil 80 en creatividad y
+extroversion. Se dabe que la variable extroversion se distribuye
+normalmente con $\mu=5$ y $\sigma=1$ y que la variable creatividad se
+distribuye como una $t$ de student y tiene parametros de $10$ gl y
+ademas ambas puntuaciones son independientes.
+
+a)  cuantos candidatos serán seleccionados.
+
+$t$ de $studen$ : pt(X, df (gl), lower.tail(TRUE,log.p=false))
+
+```{r}
+1-pnorm(5.841620,5,1,lower.tail = TRUE)
+
+pt(0.8790,10,lower.tail = TRUE)
+
+qt(0.8,10,lower.tail = TRUE)
+```
+
+b)  Que puntuaciones debe superar un aspirante en creatividad y
+    extroversión para ser admitido. creatividad \> 0.879 Extroversión \>
+    5.8416
+
+c)  Se extrae al azar 16 candidatos. ¿Cual es la probabilidad de que la
+    media (de esas 16 notas) sea mayor que 4.5.
+
+$\overline{X}$ y $\frac{\sigma}{n^{0.5}}$
+
+```{r}
+n=16
+x=4.5
+mu=5
+sigma=1
+e.e=1/4
+
+1-pnorm(4.5,5,e.e,lower.tail = TRUE)
+```
+
+d) p(x>5.6) con n=1
+
+```{r}
+1-pnorm(5.6,5,1,lower.tail = TRUE)
+```
+e) p(x>5.6) con n=16
+
+```{r}
+1-pnorm(5.6,5,e.e,lower.tail = TRUE)
+```
+
+Ejemplo. La duración media de un modelo de marca pasos es de 7 años. 
+
+es una distribución exponencial: pexp(x, rate=1/beta, lower.tail=TRUE)
+
+a) Cual es la probabilidad que dure al menos 5 años. 
+
+```{r}
+pexp(5, rate = 1/7, lower.tail = FALSE)
+1-pexp(5, rate = 1/7, lower.tail = TRUE)
+```
+
+
+b) Cual es la probabilidad que dure menos de 3 años. 
+
+```{r}
+pexp(3, rate = 1/7, lower.tail = TRUE)
+```
+
+c) Si usted ya tiene implantado el marcapasos durante 4 años, cual es la probabilidad que dure otros 4 años.
+
+```{r}
+a<-pexp(8, rate = 1/7, lower.tail = TRUE)-pexp(4, rate = 1/7, lower.tail = TRUE)
+b<-pexp(4, rate = 1/7, lower.tail = TRUE)
+a/b
+```
+
+
