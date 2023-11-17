@@ -1,0 +1,132 @@
+---
+title: "VANylaTIR"
+author: "Nahun Antonio Martínez Olmos"
+date: "2023-10-17"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Estados financieros 
+
+```{r cars}
+flujo_de_efectivo <- c(-100, 30, 40, 25, 56, 23) 
+exponente <- 0:(length(flujo_de_efectivo)-1)
+
+# calcular el VAN 
+k<- 0.5
+
+van <- sum(flujo_de_efectivo / (1 + k) ** exponente)
+van
+```
+
+```{r}
+tir <- uniroot(function(r) sum(flujo_de_efectivo / ((1+r) ** exponente)) - van, interval = c(0, 1))$root
+tir
+```
+# Ejemplo 
+
+```{r}
+set.seed(7)
+fj <- rexp(8, 1/500); fj
+fj <- c(-1000)+fj
+
+f <- c(-20000, 1000, 7000, 11000, 14000)
+
+van_tir <- function(flujo_de_efectivo, k) {
+  exponente <- 0:(length(flujo_de_efectivo)-1)
+  van <- sum(flujo_de_efectivo / (1 + k) ** exponente)
+  tir <- uniroot(function(r) sum(flujo_de_efectivo / ((1+r) ** exponente)) - van, interval = c(0, 1))$root
+  
+  return(paste(van, tir))
+
+}
+
+van_tir(f, 0.17)
+```
+
+# A partir de aqui va el codigo bueno 
+
+```{r}
+flujo_de_efectivo <- c(-100, 30, 40, 25, 56, 23) 
+
+flujo_de_efectivo <- c(-20000, 1000, 7000, 11000, 14000)
+exponente <- 0:(length(flujo_de_efectivo)-1)
+
+# calcular el VAN 
+k<- 0.11
+
+
+van <- sum(flujo_de_efectivo / (1 + k) ** exponente);van
+
+
+fc <- flujo_de_efectivo[2:length(flujo_de_efectivo)]
+e <- 1:(length(fc))
+
+tir <- uniroot(function(r) sum(fc / ((1+r) ** e)) + flujo_de_efectivo[1], interval = c(0, 1))$root; tir
+
+```
+## Funcion para calcculo del van y la tir
+
+```{r}
+
+fj <- c(-20000, 1000, 7000, 11000, 14000)
+
+VAN_TIR <- function (flujo_de_efectivo, k) {
+  
+  exponente <- 0:(length(flujo_de_efectivo)-1)
+  van <- sum(flujo_de_efectivo / (1 + k) ** exponente)
+  
+  fc <- flujo_de_efectivo[2:length(flujo_de_efectivo)]
+  e <- 1:(length(fc))
+  tir <- uniroot(function(r) sum(fc / ((1+r) ** e)) + flujo_de_efectivo[1], interval = c(0, 1))$root
+  van<-round(van,4); #tir<-round(tir,4)
+  return(paste('VAN=',van,' ','TIR=',tir))
+}
+
+
+VAN_TIR(fj, 0.19)
+```
+Ejemplo 
+
+```{r}
+set.seed(7)
+f <- rexp(8, 1/500); f
+f[1]<--3000
+f
+VAN_TIR(f,0.16)
+
+flujos <- c(-100000, 30000, 40000, 50000, 20000)
+
+VAN_TIR(f, 0.16)
+```
+A continuacion se muestran los flujos de efectivo que se estima que se obtendran en cada uno de los siguientes 7 años.
+
+```{r}
+plot(f[2:length(f)], type = 'l', lwd=6, main = 'Flujos de efectivo', xlab='Años' )
+```
+
+El inversionista cuenta con un capital de 3000 dolares, 
+
+mediante estudios de mercado similares se ah determinado una tasa de descuento del 16%, ahora mediante el calculo de las herramientas financieras VAN y tir se determinará si es rentable para el inversionista realizar este proyecto.
+
+```{r}
+VAN_TIR(f,0.16)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

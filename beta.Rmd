@@ -1,0 +1,52 @@
+---
+title: "Practica de beta"
+author: "Nahun Antonio Martínez Olmos"
+date: "2023-11-07"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+El beta me dice si aumenta
+
+paso 1: covarianza del mercado y la empresa paso 2: beta es la covarianza entre la varianza del mercado
+
+costo de capital promedio ponderado
+
+
+
+tarea, que tan costoso puede ser la beta de la empresa para que nosotros decidamos la estructura de capital usando estadsitica
+
+```{r}
+0.14*0.6 + 0.0198+ 0.0102
+
+0.07+(0.015*(0.11-0.07))
+0.015*(0.11-0.07)
+```
+
+$K_{s}=R_{r}+b(K_{m}-R{f})$ asi calculamos la tasa de descuento
+
+$R_{f}:$ Tasa de retorno libre de riesgo.
+
+$K_{m}:$ Tasa de retorno de mercado.
+
+$\beta:$ Coeficiente beta.
+
+
+```{r}
+
+monto <- c(75000, 37000, 170000); costo <- c(0.076, 0.15, 0.108)
+
+monto*costo
+
+
+(monto[1]-monto[2])/monto[2]
+
+
+```
+
+Buscar una empresa con la misma fecha 

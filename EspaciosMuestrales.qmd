@@ -5,7 +5,7 @@ format: pdf
 editor: visual
 ---
 
-# Espacios muestrales y muestras aleatorias 
+# Espacios muestrales y muestras aleatorias
 
 sintaxis: sample(x, size, replace=FALSE, prob=NULL)
 
@@ -15,6 +15,7 @@ n<-10
 
 lanzamiento <- sample(moneda, n, replace = TRUE); lanzamiento
 ```
+
 se generará un espacio
 
 ```{r}
@@ -27,7 +28,7 @@ muestra1 <- sample(espacio, n, replace = TRUE); muestra1
 muestra2 <- sample(espacio, n, replace = FALSE); muestra2
 ```
 
-Simular 4 lanzamientos de dos dados 
+Simular 4 lanzamientos de dos dados
 
 ```{r}
 espacio <- as.vector(outer(1:6,1:6,paste))
@@ -35,13 +36,15 @@ espacio
 
 muestrad <- sample(espacio,4,replace=TRUE); muestrad
 ```
-Espacio muestral para naipes 
+
+Espacio muestral para naipes
 
 ```{r}
 naipes <- paste(rep(c("A",2:10,"J","Q","K"),4),
                 c("OROS","COPAS","DIAMANTES","BASTOS"))
 naipes
 ```
+
 generar una muestra aleatoria de 120 elementos con los numeross del 1 al 6.
 
 ```{r}
@@ -54,6 +57,7 @@ muestra<-sample(v,n,replace=TRUE,probabilidades); muestra
 
 
 ```
+
 Cree una función que reciba los números de 1 a 500, inclusibe, la funcion retornará el espacio formado por los numeros dibisible entre 7, luego debera extraer una muestra aleatoria de estos numeros con reemplazo,
 
 ```{r}
@@ -65,17 +69,3 @@ for (i in 1:500) if (i%%7==0) {
 }
 v
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-

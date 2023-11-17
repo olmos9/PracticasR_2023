@@ -1,0 +1,399 @@
+---
+title: "practica"
+author: "Nahun Antonio Martínez Olmos"
+date: "2023-10-02"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Distribución binomial
+
+examen con 10 preguntas de respuesta múltiple
+
+a)  identificar la distribución del número de respuestas correctos
+
+```{r}
+n<-10
+p<-1/4
+```
+
+b)  
+
+```{r}
+df<-data.frame(x=0:10,y=dbinom(0:10,10,p))
+
+
+acumulado <- c()
+
+for (i in 0:10) {
+  acumulado[i+1]<-pbinom(i,10,p)
+}
+
+distr<-data.frame(x=0:10,y=acumulado)
+
+plot(x=distr$x,y=df$y, ylab='F(x)',xlab= 'Número de eventos', 
+     main = 'Porbabilidades Binomiales', col='Orangered', type='h', lwd=17)
+
+plot(x=distr$x,y=distr$y, ylab='F(x)',xlab= 'Número de eventos', 
+     main = 'Porbabilidades Acumuladas', col='Orangered', type='s', lwd=7) #type= h, s ó l
+
+
+
+```
+
+c)  probabilidad de que acierte 5 o más preguntas
+
+```{r}
+sum(dbinom(5:10,10,0.25))
+1-pbinom(4,10,0.25)
+```
+
+d)  5 preguntas o menos
+
+```{r}
+pbinom(5,10,0.25)
+```
+
+probabilidad de al menos una pregunta
+
+```{r}
+
+1-dbinom(0,10,0.25)
+
+```
+
+$n=25$ y $p=07$
+
+```{r}
+sum(dbinom(0:20,25,0.7))
+
+```
+
+```{r}
+library(ggplot2)
+
+df<-data.frame(x=0:25,y=dbinom(0:25,25,0.7))
+valor<-20
+x=4
+
+ggplot(data = df, aes(x=x,y=y, fill=factor(ifelse( x<20,"valor","resto"))))+
+  geom_bar(stat = 'identity')
+
+```
+
+## Distribución normal acumulada
+
+```{r}
+pbinom(20,50,0.35)
+```
+
+## Distribución binomial a la inversa
+
+```{r}
+qbinom(0.4,50,0.684)
+```
+
+##Simulacion de valores binomiales
+
+```{r}
+rbinom(12, 70, 0.486)
+```
+
+# Distribusion de Poisson
+
+```{r}
+dpois(6,8)
+```
+
+## acumulada
+
+```{r}
+ppois(6,9)
+```
+
+##inversa
+
+```{r}
+qpois(0.206778,9)
+```
+
+#simulalcion de valores que siguen una distribución de Poisson
+
+Un programador comete en promedio 4 errores
+
+a)  probabilidad de que cometa al menos un error
+
+$\lambda=4$
+
+```{r}
+1-dpois(0,4)
+```
+
+```{r}
+x<-0:5
+tabla1<-cbind(x,'pr'=dpois(x,4)); tabla
+```
+
+```{r}
+tabla2<-cbind(x,'pr'=ppois(x,4)); tabla
+```
+
+```{r}
+par(mfrow=c(1,2))
+x<-0:12
+
+plot(x, dpois(x,4), type='h', xlab='Número de errores',
+     ylab='probabilidades')
+plot(x, ppois(x,4), type='h', xlab='Número de errores',
+     ylab='probabilidades Aacumuladas')
+```
+
+# Distribución geometrica
+
+La probabilidad de que un vendedor venda un producto en una visita es un 0.09.
+
+a)  hallar la probabilidad de 5 fracazos antes de realizar la primera venta.
+
+```{r}
+dgeom(5,0.09)
+```
+
+b)  hallar la probabilidad de que el número de fracasas antes de realizzar la primera venta sea inferior a 8
+
+```{r}
+pgeom(7,0.09)
+```
+
+# Distribucion binomial negativa
+
+La probabilidad de que un futbolista anote 1 gol es 0.38
+
+a)  probabilidad de que tenga que realizar 8 tiros para anotar 3 goles
+
+```{r}
+p<-0.39
+r<-3
+dnbinom(8-r,r,p)
+```
+
+# distribución hipergeometrica
+
+En una empresa de 40 empleados 25 son hombres y 15 son mujeres, se forma xomite por 7 personas
+
+a)  Calcular la probabilidad de que 5 de las personas que forman un comité sean 7
+
+```{r}
+#dhyper(x,N1,N2,n)
+
+dhyper(5,25,15,7)
+```
+
+# Distribuciones Continuas
+
+## Distribucion de uniforme
+
+El tiempo de retraso en minutos de un vuelo sigue una distribución uniforme continua entre 1 y 7.
+
+a)  Representar gráficamente la función de densidad y de distribución
+
+```{r}
+par(mfrow=c(1,2))
+x<-seq(1,7,0.01)
+a<-1;b<-7
+plot(x,dunif(x,a,b), type='s', xlab='x', ylab='Función de densidad uniforme')
+#abline(v = 1, col='red', lwd = 3)
+plot(x,punif(x,a,b), type='s', xlab='x', ylab='Función de densidad uniforme')
+
+```
+
+b)  simular una muestra de 10000 tiempos de retraso. Representar el histograma de la muestra y una estimacion de la densidad. Obtener las medias y desbiaciones típicas teoricas y muestrales.
+
+```{r}
+set.seed(11)
+n<-10000
+muestra<- runif(n,a,b)
+par(mfrow=c(1,1))
+hist(muestra,xlab='x',ylab = 'Frecuencia relativa', main = 'Histograma', prob=T,
+     breaks = 12)
+#abline(v = mean(muestra), col='red', lwd = 3)
+points(density(muestra), type='l', lwd=4)
+
+media.teorica <- (a+b)*0.5;media.teorica
+std.teorica <- sqrt((b-a)^2/12); std.teorica 
+
+```
+
+##Distribución normal
+
+El gasto mensual de una familia en una salida sigue una distr normal con $\mu=1500$ dolares con $\sigma=167$
+
+a)  representar las funciones de densidad y de distribución del gasto
+
+```{r}
+par(mfrow=c(1,2))
+mu<-1500; sigm<- 167
+x<-seq(mu-4*sigm, mu+4*sigm, 0.1)
+plot(x, dnorm(x,mu,sigm), type='l',xlab='Gasto mensual',ylab='Funcion de densidad')
+plot(x, pnorm(x,mu,sigm), type='l',xlab='Gasto mensual',ylab='Funcion de distribución')
+```
+
+b)  porcentaje de familias cuto gasto es superior a 1700 euros
+
+```{r}
+1-pnorm(1700,mu,sigm)
+```
+
+c)  porcentaje de familias cuyo gasto mensual se encuentra entre 1200 y 1600
+
+```{r}
+pnorm(1600,mu,sigm)-pnorm(1200,mu,sigm)
+```
+
+c)  porcentaje de familias cuyo gasto mensual es por debajo de 1100 eeuros
+
+```{r}
+pnorm(1100,mu,sigm)
+```
+
+d)  Gasto maximo del 10% de las familias con menor gasto.
+
+```{r}
+qnorm(0.1,mu,sigm)
+```
+
+f)  gasto minimo del 5% de las familias que mas gastan en vacaciones
+
+```{r}
+qnorm(0.95,mu,sigm)
+```
+
+g)  obtener los deciles del gasto mensual
+
+```{r}
+seq(0:1,0.1)
+seq(0.1,0.9,0.1)
+cbind(seq(0.1,0.9,0.1),qnorm(seq(0.1,0.9,0.1),mu,sigm))
+```
+
+## Distribución exponencial
+
+El tiempo de servicio medio de un cajero en un supermercado es de 3 minutos.
+
+a)  representar graficamente la fundion de densidad y de distribución del tiempo del servicio
+
+```{r}
+par(mfrow=c(1,2))
+x<-seq(0,10,0.01)
+plot(x, dexp(x,rate = 1/3), type='l', xlab='x',ylab='Función de densidad')
+plot(x, pexp(x,rate = 1/3), type='l', xlab='x',ylab='Función de densidad')
+```
+
+b)  probabilidad de que un cliente sea atendido en menos de dos minutos
+
+```{r}
+pexp(2,1/3)
+```
+
+c)  probabilidad de que un cliente sea atendido en mas de cuatro minutos
+
+```{r}
+1-pexp(4,1/3)
+```
+
+c)  simular una muestra del tiempo de 100 clientes. obtener media y varianza de la muestra simulada.
+
+```{r}
+n<-rexp(100,1/3)
+
+hist(n, breaks = 10, main='servicio para clientes', freq = F)
+points(density(n),type='l',lwd=3)
+
+
+```
+
+##Distribucion gamma
+
+```{r}
+x<- seq(0,12,0.1)
+a<-1;b<-1
+y<-dgamma(x,a,b)
+plot(x,y,type='l',ylab='Función de densidad',main='Distribución Gamma')
+text(10,1.0-a/15, paste("a=", toString(a)),col=a)
+
+for (a in c(2,3,4,5,6)) {
+  y<-dgamma(x,a,b)
+  lines(x,y)
+  text(10,1.0-a/15, paste("a=", toString(a)),col=a)
+}
+```
+
+El tiempo de servicio medio de un cajero cajero para atender a 3 clientes en un supermercado es de 4 minutos.
+
+a)  probabilidad de que un cliente sea atendido en mas de seis minutos
+
+```{r}
+1-pgamma(6,3,1/4)
+```
+
+# Intervalos de confianza
+
+```{r}
+set.seed(4)
+fumadores <- rbinom(1,100,0.295)
+pf <- fumadores/100
+
+prop.test(fumadores,100,0.295, conf.level = 0.95)
+```
+
+```{r}
+p.t <- 0.43; n.v <- 799 ; pc<- 0.46
+votos.c <- n.v*pc
+votos.t <- n.v*p.t  
+
+prop.test(x=votos.c, n=n.v, conf.level = 0.95)
+
+prop.test(x=votos.t, n=n.v, conf.level = 0.95)
+
+```
+
+## intervalo con t de student
+
+```{r}
+library(simFrame)
+
+data("eusilcP")
+
+head(eusilcP,3)
+dim(eusilcP)
+
+ingresoh <- eusilcP$eqIncome[eusilcP$gender=="male"]
+ingresom <- eusilcP$eqIncome[eusilcP$gender=="female"]
+
+t.test(ingresoh, conf.level = 0.95)
+
+t.test(ingresom, conf.level = 0.95)
+```
+
+## Intervalo con distribucion normal
+
+```{r}
+library(BSDA)
+var(ingresoh)
+length(ingresoh)
+mediah<-mean(ingresoh)
+stdh<-sd(ingresoh)
+mediaf<-mean(ingresom)
+stdf<-sd(ingresom)
+zsum.test(mean.x = mediah, sigma.x = stdh, n.x = 28539, conf.level = 0.95)
+
+```
+
+prueba de diferenia de medias para los ingresos medios de hombres y mejores
+
+```{r}
+zsum.test(mean.x = mediah, sigma.x = stdh, n.x=28539,
+          mean.y = mediaf, sigma.y = stdf, n.y=28539, conf.level = 0.95)
+```
